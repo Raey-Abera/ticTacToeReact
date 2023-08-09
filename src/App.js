@@ -34,8 +34,6 @@ function Board({ xIsNext, squares, onPlay }) {
     status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
 
-  // console.log(status);
-
   return (
     <span>
       <div className="status">{status}</div>
@@ -62,14 +60,12 @@ export default function Game() {
   const [xIsNext, setXIsNext] = useState(true);
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
-  // const currentSquares = history[history.length - 1];
   const currentSquares = history[currentMove];
 
 
   //Callled when square is clicked. If player “goes back in time” and then makes a new move from that point, only keep the history up to that point
   //Each time a move is made,update currentMove to point to the latest history entry
   function handlePlay(nextSquares) {
-    // setHistory([...history, nextSquares]);
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
