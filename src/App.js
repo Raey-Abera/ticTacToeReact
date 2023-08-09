@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 
-//child component 
+//child component--  adds X’s or O’s to empty squares
 function Square({value, onSquareClick}) {
   return (
     <button className="square" onClick={onSquareClick}>
@@ -10,9 +10,10 @@ function Square({value, onSquareClick}) {
   );
 }
 
-//parent component 
+//parent component -- takes three props: xIsNext, squares, and new onPlay function that Board can call with the updated squares array when a player makes a move
 function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
+    //call calculateWinner(squares)to check if a player has won. Check at the same if a user has clicked a square that already has a X or and O at the same time. Return early in both cases
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
@@ -60,12 +61,40 @@ function Board({ xIsNext, squares, onPlay }) {
 export default function Game() {
   const [xIsNext, setXIsNext] = useState(true);
   const [history, setHistory] = useState([Array(9).fill(null)]);
-  const currentSquares = history[history.length - 1];
+  const [currentMove, setCurrentMove] = useState(0);
+  // const currentSquares = history[history.length - 1];
+  const currentSquares = history[currentMove];
 
+
+  //Callled when square is clicked. If player “goes back in time” and then makes a new move from that point, only keep the history up to that point
+  //Each time a move is made,update currentMove to point to the latest history entry
   function handlePlay(nextSquares) {
-    setHistory([...history, nextSquares]);
+    // setHistory([...history, nextSquares]);
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
     setXIsNext(!xIsNext);
   }
+
+  //update currentMove. And set xIsNext to true if the number that you’re changing currentMove to is even
+  function jumpTo(nextMove) {
+    setCurrentMove(nextMove);
+    setXIsNext(nextMove % 2 === 0);
+  }
+
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = 'Go to move #' + move;
+    } else {
+      description = 'Go to game start';
+    }
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
 
   return (
     <span>
@@ -75,6 +104,7 @@ export default function Game() {
       </div>
       <div className="game-info">
         <ol>{/*TODO*/}</ol>
+        <ol>{moves}</ol>
       </div>
     </div>
     </span>
