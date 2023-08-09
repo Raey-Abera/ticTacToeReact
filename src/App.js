@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 
 //child component 
-function Square({ value, onSquareClick }) {
+function Square({value, onSquareClick}) {
   return (
     <button className="square" onClick={onSquareClick}>
       {value}
@@ -19,14 +19,11 @@ export default function Board() {
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
-    // if (squares[i] || calculateWinner(squares[i])) {
-    //   return;
-    // }
     const nextSquares = squares.slice();
     if (xIsNext) {
-      nextSquares[i] = "X";
+      nextSquares[i] = 'X';
     } else {
-      nextSquares[i] = "O";
+      nextSquares[i] = 'O';
     }
     setSquares(nextSquares);
     setXIsNext(!xIsNext);
@@ -34,20 +31,20 @@ export default function Board() {
 
   const winner = calculateWinner(squares);
   let status;
-  if (winner){
-    status = "Winner: " + winner;
+  if (winner) {
+    status = 'Winner: ' + winner;
   } else {
-    status = "Next Player: " + (xIsNext ? "X" : "O");
+    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
   }
 
-  // console.log(status)
+  // console.log(status);
 
   return (
     <span>
-        <div className="status">{status}</div>
-        <div className="board-row">
+      <div className="status">{status}</div>
+      <div className="board-row">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)}/>
+        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
         <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
       </div>
       <div className="board-row">
@@ -58,7 +55,7 @@ export default function Board() {
       <div className="board-row">
         <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
         <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)}/>
+        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
       </div>
     </span>
   );
@@ -75,7 +72,7 @@ function calculateWinner(squares) {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  for(let i = 0; i < lines.lenght; i++) {
+  for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return squares[a];
