@@ -10,7 +10,7 @@ function Square({value, onSquareClick}) {
   );
 }
 
-//parent component -- takes three props: xIsNext, squares, and new onPlay function that Board can call with the updated squares array when a player makes a move
+//parent component -- takes three props: xIsNext, squares, and new onPlay function the Board can call with the updated squares array when a player makes a move
 function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
     //call calculateWinner(squares)to check if a player has won. Check at the same if a user has clicked a square that already has a X or and O at the same time. Return early in both cases
@@ -56,10 +56,13 @@ function Board({ xIsNext, squares, onPlay }) {
   );
 }
 
+//Top level component
 export default function Game() {
-  const [xIsNext, setXIsNext] = useState(true);
+  // const [xIsNext, setXIsNext] = useState(true);
+  // Game no longers stores xIsNext as a separate state variable and instead figures it out based on the currentMove avoiding 
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
+  const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
 
@@ -69,15 +72,14 @@ export default function Game() {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
-    setXIsNext(!xIsNext);
   }
 
   //update currentMove. And set xIsNext to true if the number that you’re changing currentMove to is even
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
-    setXIsNext(nextMove % 2 === 0);
   }
 
+  //Use map to transform the history of moves into React elements representing buttons on the screen, and displaying a list of buttons to “jump” to past moves
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
@@ -87,6 +89,7 @@ export default function Game() {
     }
     return (
       <li key={move}>
+        {/*update currentMove and set xIsNext to true if the number that currentMove is changed to is even*/}
         <button onClick={() => jumpTo(move)}>{description}</button>
       </li>
     );
@@ -99,7 +102,6 @@ export default function Game() {
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
-        <ol>{/*TODO*/}</ol>
         <ol>{moves}</ol>
       </div>
     </div>
@@ -107,6 +109,7 @@ export default function Game() {
   );
 }
 
+//Takes array of squares and checks for winner based on condition. Returns 'X', 'O', or null 
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
